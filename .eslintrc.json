@@ -1,6 +1,7 @@
 {
     "extends": "airbnb-base",
     "rules": {
-        "implicit-arrow-linebreak": "off"
+        "implicit-arrow-linebreak": "off",
+        "function-paren-newline": "off"
     }
 }
