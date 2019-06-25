@@ -4,7 +4,19 @@
   "description": "GraphQL api for document management app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon server.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -18,5 +30,23 @@
   "bugs": {
     "url": "https://github.com/rotimi-babalola/documentos-graphql/issues"
   },
-  "homepage": "https://github.com/rotimi-babalola/documentos-graphql#readme"
+  "homepage": "https://github.com/rotimi-babalola/documentos-graphql#readme",
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.18.0",
+    "husky": "^2.5.0",
+    "lint-staged": "^8.2.1",
+    "nodemon": "^1.19.1"
+  },
+  "dependencies": {
+    "apollo-server-express": "^2.6.4",
+    "babel": "^6.23.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "graphql": "^14.3.1",
+    "pg": "^7.11.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.8.12"
+  }
 }
