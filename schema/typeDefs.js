@@ -1,6 +1,8 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
+  scalar Date
+
   enum Role {
     User
     Admin
@@ -11,12 +13,16 @@ const typeDefs = gql`
     name: String!
     email: String!
     role: Role!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date!
+    updatedAt: Date!
   }
 
   type Query {
     getUsers: [User!]
+  }
+
+  type Mutation {
+    createUser(name: String!, email: String!, password: String!): User!
   }
 `;
 
