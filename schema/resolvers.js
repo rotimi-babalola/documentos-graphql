@@ -6,6 +6,9 @@ const resolvers = {
     async getUsers(root, args, { models }) {
       return models.Users.findAll();
     },
+    async getUser(root, { id }, { models }) {
+      return models.Users.findByPk(id);
+    },
   },
   Mutation: {
     async createUser(root, args, { models }) {
