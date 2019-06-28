@@ -1,5 +1,11 @@
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
+require('dotenv').config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const resolvers = {
   Query: {
@@ -13,7 +19,34 @@ const resolvers = {
   Mutation: {
     async createUser(root, args, { models }) {
       const { name, email, password } = args;
-      return models.Users.create({ name, email, password });
+      const newUser = models.Users.create({ name, email, password });
+      const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
+        expiresIn: '12h',
+      });
+
+      return {
+        token,
+        newUser,
+      };
+    },
+    async login(root, args, { models }) {
+      const { email, password } = args;
+      const user = await models.Users.findOne({ where: { email } });
+      if (!user) {
+        throw new Error(`User with ${email} not found!`);
+      }
+
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) {
+        throw new Error('Invalid password');
+      }
+
+      const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+
+      return {
+        token,
+        user,
+      };
     },
   },
   Date: new GraphQLScalarType({

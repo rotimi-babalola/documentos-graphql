@@ -3,6 +3,7 @@
     "rules": {
         "implicit-arrow-linebreak": "off",
         "function-paren-newline": "off",
-        "arrow-parens": "off"
+        "arrow-parens": "off",
+        "prefer-destructuring": "off"
     }
 }
