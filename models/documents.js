@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   Documents.associate = models => {
     // associations can be defined here
-    Documents.belongsTo(models.User, {
+    Documents.belongsTo(models.Users, {
       foreignKey: 'userId',
       as: 'user',
       onDelete: 'CASCADE',
