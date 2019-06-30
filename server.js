@@ -9,6 +9,7 @@ const app = express();
 const port = 4000;
 
 const server = new ApolloServer(gqlServerConfig);
+// const server = new ApolloServer({ typeDefs, resolvers, context: { models } });
 
 server.applyMiddleware({ app });
 

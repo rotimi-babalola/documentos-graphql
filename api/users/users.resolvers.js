@@ -16,11 +16,9 @@ const createUser = async (root, args, { models }) => {
     expiresIn: '12h',
   });
 
-  console.log(newUser, '>>>');
-
   return {
     token,
-    newUser: newUser.dataValues,
+    user: newUser,
   };
 };
 

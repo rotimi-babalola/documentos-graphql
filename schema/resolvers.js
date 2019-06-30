@@ -19,14 +19,14 @@ const resolvers = {
   Mutation: {
     async createUser(root, args, { models }) {
       const { name, email, password } = args;
-      const newUser = models.Users.create({ name, email, password });
+      const newUser = await models.Users.create({ name, email, password });
       const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
         expiresIn: '12h',
       });
 
       return {
         token,
-        newUser,
+        user: newUser,
       };
     },
     async login(root, args, { models }) {
