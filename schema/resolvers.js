@@ -30,7 +30,7 @@ const resolvers = {
       };
     },
     async login(root, args, { models }) {
-      const { email, password } = args;
+      const { email, password } = args.input;
       const user = await models.Users.findOne({ where: { email } });
       if (!user) {
         throw new Error(`User with ${email} not found!`);
