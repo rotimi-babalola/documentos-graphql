@@ -6,7 +6,7 @@ enum Role {
 scalar Date
 
 type User {
-  id: Int!
+  id: ID!
   name: String!
   email: String!
   role: Role!
@@ -32,7 +32,7 @@ input LoginInput {
 
 type Query {
   getUsers: [User!]
-  getUser(id: Int!): User
+  getUser(id: ID!): User
 }
 
 type Mutation {
