@@ -1,13 +1,28 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { combineResolvers } = require('graphql-resolvers');
+
+const {
+  isAuthenticated,
+  isAdmin,
+  isUser,
+} = require('../../utils/authorization');
 
 require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const getUsers = async (root, args, ctx) => ctx.models.users.findAll();
+const getUsers = combineResolvers(
+  isAuthenticated,
+  isAdmin,
+  async (_, args, ctx) => ctx.models.users.findAll(),
+);
 
-const getUser = async (root, { id }, { models }) => models.users.findByPk(id);
+const getUser = combineResolvers(
+  isAuthenticated,
+  isUser,
+  async (root, { id }, { models }) => models.users.findByPk(id),
+);
 
 const createUser = async (root, args, { models }) => {
   const { name, email, password } = args.input;

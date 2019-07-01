@@ -14,7 +14,6 @@ type Document {
 }
 
 input NewDocumentInput {
-  userId: ID!
   title: String!
   content: String!
   access: Access
@@ -26,5 +25,5 @@ extend type Query {
 }
 
 extend type Mutation {
-  createDocument(input: NewDocumentInput, token: String!): Document!
+  createDocument(input: NewDocumentInput): Document!
 }
