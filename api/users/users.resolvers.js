@@ -34,7 +34,7 @@ const login = async (root, args, { models }) => {
     throw new Error('Invalid password');
   }
 
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET);
 
   return {
     token,
