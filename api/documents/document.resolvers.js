@@ -1,16 +1,25 @@
 const { combineResolvers } = require('graphql-resolvers');
+const { Op } = require('sequelize');
+
 const {
   isAuthenticated,
-  isAdmin,
   isDocumentOwner,
 } = require('../../utils/authorization');
 
 const getDocuments = combineResolvers(
   isAuthenticated,
-  isAdmin,
-  async (_, args, { models }) => {
+  async (_, args, { models, user }) => {
+    let documents;
     try {
-      const documents = await models.documents.findAll();
+      if (user.role === 'Admin') {
+        documents = await models.documents.findAll();
+      } else {
+        documents = await models.documents.findAll({
+          where: {
+            [Op.or]: [{ userId: user.id }, { access: 'public' }],
+          },
+        });
+      }
       return documents;
     } catch (error) {
       return new Error(error.message);
@@ -50,6 +59,27 @@ const createDocument = combineResolvers(
   },
 );
 
+const updateDocument = combineResolvers(
+  isAuthenticated,
+  isDocumentOwner,
+  async (_, args, { models }) => {
+    const { id, ...updateObject } = args.input;
+    try {
+      const documentToUpdate = await models.documents.findOne({
+        where: { id },
+      });
+
+      if (!documentToUpdate) {
+        throw new Error('Document not found');
+      }
+
+      return documentToUpdate.update(updateObject);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+);
+
 module.exports = {
   Query: {
     getDocuments,
@@ -57,5 +87,6 @@ module.exports = {
   },
   Mutation: {
     createDocument,
+    updateDocument,
   },
 };

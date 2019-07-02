@@ -19,11 +19,19 @@ input NewDocumentInput {
   access: Access
 }
 
+input UpdateDocumentInput {
+  id: ID!
+  title: String
+  content: String
+  access: Access
+}
+
 extend type Query {
   getDocuments: [Document!]
   getDocument(id: ID!): Document!
 }
 
 extend type Mutation {
-  createDocument(input: NewDocumentInput): Document!
+  createDocument(input: NewDocumentInput!): Document!
+  updateDocument(input: UpdateDocumentInput): Document!
 }

@@ -23,7 +23,7 @@ exports.isUser = (_, args, { user }) => {
 };
 
 exports.isDocumentOwner = async (_, args, { models, user }) => {
-  const document = await models.documents.findByPk(args.id);
+  const document = await models.documents.findByPk(args.input.id);
   if (document.userId.toString() === user.id.toString()) {
     return skip;
   }
