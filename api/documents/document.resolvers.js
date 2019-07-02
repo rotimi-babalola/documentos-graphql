@@ -80,6 +80,34 @@ const updateDocument = combineResolvers(
   },
 );
 
+const deleteDocument = combineResolvers(
+  isAuthenticated,
+  isDocumentOwner,
+  async (_, args, { models, user }) => {
+    try {
+      const documentToDelete = await models.documents.destroy({
+        // the second condition for userId might be redundant since we are checking
+        // if the document belongs to the user before deleting. Just doing the check for
+        // extra safety ¯\_(ツ)_/¯
+        where: {
+          id: args.input.id,
+          userId: user.id,
+        },
+      });
+
+      if (!documentToDelete) {
+        throw new Error('Unable to find document');
+      }
+
+      return {
+        message: 'Successfully deleted document!',
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+);
+
 module.exports = {
   Query: {
     getDocuments,
@@ -88,5 +116,6 @@ module.exports = {
   Mutation: {
     createDocument,
     updateDocument,
+    deleteDocument,
   },
 };

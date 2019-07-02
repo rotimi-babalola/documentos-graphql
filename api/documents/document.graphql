@@ -13,6 +13,14 @@ type Document {
   updatedAt: Date!
 }
 
+type Message {
+  message: String! 
+}
+
+input DeleteDocumentInput {
+  id: ID!
+}
+
 input NewDocumentInput {
   title: String!
   content: String!
@@ -34,4 +42,5 @@ extend type Query {
 extend type Mutation {
   createDocument(input: NewDocumentInput!): Document!
   updateDocument(input: UpdateDocumentInput): Document!
+  deleteDocument(input: DeleteDocumentInput!): Message
 }
