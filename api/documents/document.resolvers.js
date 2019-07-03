@@ -80,6 +80,40 @@ const updateDocument = combineResolvers(
   },
 );
 
+const transferDocument = combineResolvers(
+  isAuthenticated,
+  isDocumentOwner,
+  async (_, args, { models }) => {
+    const { docId, newOwnerId } = args.input;
+    try {
+      const documentToTransfer = await models.documents.findOne({
+        where: { id: docId },
+      });
+
+      if (!documentToTransfer) {
+        throw new Error('Docuemnt not found');
+      }
+
+      if (documentToTransfer.dataValues.userId.toString() === newOwnerId) {
+        return {
+          message: 'You already own this document!',
+        };
+      }
+
+      const updatedDoc = documentToTransfer.update({
+        userId: newOwnerId,
+      });
+
+      return {
+        message: 'Document successfully transferred',
+        document: updatedDoc,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+);
+
 const deleteDocument = combineResolvers(
   isAuthenticated,
   isDocumentOwner,
@@ -116,6 +150,7 @@ module.exports = {
   Mutation: {
     createDocument,
     updateDocument,
+    transferDocument,
     deleteDocument,
   },
 };
