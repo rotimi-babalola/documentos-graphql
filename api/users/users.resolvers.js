@@ -21,7 +21,36 @@ const getUsers = combineResolvers(
 const getUser = combineResolvers(
   isAuthenticated,
   isUser,
-  async (root, { id }, { models }) => models.users.findByPk(id),
+  async (root, { input }, { models }) => models.users.findByPk(input.id),
+);
+
+const updateUser = combineResolvers(
+  isAuthenticated,
+  async (root, args, { models, user }) => {
+    const updateObject = args.input;
+
+    // hash password if it is in the update object
+    if (updateObject.password) {
+      updateObject.password = bcrypt.hashSync(
+        updateObject.password,
+        bcrypt.genSaltSync(10),
+      );
+    }
+
+    try {
+      const userToUpdate = await models.users.findOne({
+        where: { id: user.id },
+      });
+
+      if (!userToUpdate) {
+        throw new Error('User not found!');
+      }
+
+      return userToUpdate.update(updateObject);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 );
 
 const createUser = async (root, args, { models }) => {
@@ -65,5 +94,6 @@ module.exports = {
   Mutation: {
     createUser,
     login,
+    updateUser,
   },
 };
