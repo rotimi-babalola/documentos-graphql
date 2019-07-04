@@ -1,3 +1,4 @@
+# type definitions
 enum Access {
   public
   private
@@ -17,8 +18,14 @@ type Message {
   message: String! 
 }
 
+type TransferDocument {
+  message: String!
+  document: Document
+}
+
+# input definitions
 input DeleteDocumentInput {
-  id: ID!
+  docId: ID!
 }
 
 input NewDocumentInput {
@@ -28,10 +35,15 @@ input NewDocumentInput {
 }
 
 input UpdateDocumentInput {
-  id: ID!
+  docId: ID!
   title: String
   content: String
   access: Access
+}
+
+input TransferDocumentInput {
+  docId: ID!
+  newOwnerId: ID!
 }
 
 extend type Query {
@@ -43,4 +55,5 @@ extend type Mutation {
   createDocument(input: NewDocumentInput!): Document!
   updateDocument(input: UpdateDocumentInput): Document!
   deleteDocument(input: DeleteDocumentInput!): Message
+  transferDocument(input: TransferDocumentInput): TransferDocument
 }
