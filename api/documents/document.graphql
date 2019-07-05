@@ -1,0 +1,59 @@
+# type definitions
+enum Access {
+  public
+  private
+}
+
+type Document {
+  id: ID!
+  userId: ID!
+  title: String!
+  content: String!
+  access: Access!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type Message {
+  message: String! 
+}
+
+type TransferDocument {
+  message: String!
+  document: Document
+}
+
+# input definitions
+input DeleteDocumentInput {
+  docId: ID!
+}
+
+input NewDocumentInput {
+  title: String!
+  content: String!
+  access: Access
+}
+
+input UpdateDocumentInput {
+  docId: ID!
+  title: String
+  content: String
+  access: Access
+}
+
+input TransferDocumentInput {
+  docId: ID!
+  newOwnerId: ID!
+}
+
+extend type Query {
+  getDocuments: [Document!]
+  getDocument(id: ID!): Document!
+}
+
+extend type Mutation {
+  createDocument(input: NewDocumentInput!): Document!
+  updateDocument(input: UpdateDocumentInput): Document!
+  deleteDocument(input: DeleteDocumentInput!): Message
+  transferDocument(input: TransferDocumentInput): TransferDocument
+}

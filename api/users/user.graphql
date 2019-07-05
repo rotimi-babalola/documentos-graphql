@@ -1,0 +1,51 @@
+# type definitions
+enum Role {
+  User
+  Admin
+}
+
+scalar Date
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  role: Role!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type AuthPayload {
+  token: String!
+  user: User
+}
+
+# input types
+input NewUserInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+type Query {
+  getUsers: [User!]
+  getUser(id: ID!): User
+}
+
+type Mutation {
+  createUser(input: NewUserInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(userToDeleteID: ID!): Message!
+}
