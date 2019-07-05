@@ -47,4 +47,5 @@ type Mutation {
   createUser(input: NewUserInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
   updateUser(input: UpdateUserInput!): User!
+  deleteUser(userToDeleteID: ID!): Message!
 }

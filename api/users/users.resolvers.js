@@ -53,12 +53,40 @@ const updateUser = combineResolvers(
   },
 );
 
+const deleteUser = combineResolvers(
+  isAuthenticated,
+  isAdmin,
+  async (root, args, { models }) => {
+    try {
+      const userToDelete = await models.users.destroy({
+        where: {
+          id: args.userToDeleteID,
+        },
+      });
+
+      if (!userToDelete) {
+        throw new Error('Unable to find user');
+      }
+
+      return {
+        message: 'Successfully deleted user!',
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+);
+
 const createUser = async (root, args, { models }) => {
   const { name, email, password } = args.input;
   const newUser = await models.users.create({ name, email, password });
-  const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
-    expiresIn: '12h',
-  });
+  const token = jwt.sign(
+    { userId: newUser.id, role: newUser.role },
+    JWT_SECRET,
+    {
+      expiresIn: '12h',
+    },
+  );
 
   return {
     token,
@@ -78,7 +106,9 @@ const login = async (root, args, { models }) => {
     throw new Error('Invalid password');
   }
 
-  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET);
+  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
+    expiresIn: '12h',
+  });
 
   return {
     token,
@@ -95,5 +125,6 @@ module.exports = {
     createUser,
     login,
     updateUser,
+    deleteUser,
   },
 };
