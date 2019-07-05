@@ -1,3 +1,4 @@
+# type definitions
 enum Role {
   User
   Admin
@@ -19,6 +20,7 @@ type AuthPayload {
   user: User
 }
 
+# input types
 input NewUserInput {
   name: String!
   email: String!
@@ -30,6 +32,12 @@ input LoginInput {
   password: String!
 }
 
+input UpdateUserInput {
+  name: String
+  email: String
+  password: String
+}
+
 type Query {
   getUsers: [User!]
   getUser(id: ID!): User
@@ -38,4 +46,6 @@ type Query {
 type Mutation {
   createUser(input: NewUserInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(userToDeleteID: ID!): Message!
 }

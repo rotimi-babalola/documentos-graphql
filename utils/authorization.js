@@ -16,7 +16,7 @@ exports.isAdmin = (_, args, { user }) => {
 };
 
 exports.isUser = (_, args, { user }) => {
-  if (args.id.toString() === user.id) {
+  if (args.input.id.toString() === user.id) {
     return skip;
   }
   return new ForbiddenError('Not authorized!');

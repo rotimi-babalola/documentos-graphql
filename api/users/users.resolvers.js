@@ -21,15 +21,72 @@ const getUsers = combineResolvers(
 const getUser = combineResolvers(
   isAuthenticated,
   isUser,
-  async (root, { id }, { models }) => models.users.findByPk(id),
+  async (root, { input }, { models }) => models.users.findByPk(input.id),
+);
+
+const updateUser = combineResolvers(
+  isAuthenticated,
+  async (root, args, { models, user }) => {
+    const updateObject = args.input;
+
+    // hash password if it is in the update object
+    if (updateObject.password) {
+      updateObject.password = bcrypt.hashSync(
+        updateObject.password,
+        bcrypt.genSaltSync(10),
+      );
+    }
+
+    try {
+      const userToUpdate = await models.users.findOne({
+        where: { id: user.id },
+      });
+
+      if (!userToUpdate) {
+        throw new Error('User not found!');
+      }
+
+      return userToUpdate.update(updateObject);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+);
+
+const deleteUser = combineResolvers(
+  isAuthenticated,
+  isAdmin,
+  async (root, args, { models }) => {
+    try {
+      const userToDelete = await models.users.destroy({
+        where: {
+          id: args.userToDeleteID,
+        },
+      });
+
+      if (!userToDelete) {
+        throw new Error('Unable to find user');
+      }
+
+      return {
+        message: 'Successfully deleted user!',
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 );
 
 const createUser = async (root, args, { models }) => {
   const { name, email, password } = args.input;
   const newUser = await models.users.create({ name, email, password });
-  const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
-    expiresIn: '12h',
-  });
+  const token = jwt.sign(
+    { userId: newUser.id, role: newUser.role },
+    JWT_SECRET,
+    {
+      expiresIn: '12h',
+    },
+  );
 
   return {
     token,
@@ -49,7 +106,9 @@ const login = async (root, args, { models }) => {
     throw new Error('Invalid password');
   }
 
-  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET);
+  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, {
+    expiresIn: '12h',
+  });
 
   return {
     token,
@@ -65,5 +124,7 @@ module.exports = {
   Mutation: {
     createUser,
     login,
+    updateUser,
+    deleteUser,
   },
 };
