@@ -39,9 +39,13 @@ input UpdateUserInput {
   password: String
 }
 
+input UserIDInput {
+  id: ID!
+}
+
 type Query {
   getUsers: [User!]
-  getUser(id: ID!): User
+  getUser(input: UserIDInput!): User
 }
 
 type Mutation {
