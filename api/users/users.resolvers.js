@@ -119,10 +119,10 @@ const login = async (root, args, { models }) => {
 // gets the documents belonging to a user
 const documents = combineResolvers(
   isAuthenticated,
-  async (root, args, { models }) => {
+  async (user, args, { models }) => {
     try {
       return await models.documents.findAll({
-        where: { userId: root.id },
+        where: { userId: user.id },
       });
     } catch (error) {
       throw new Error(error.message);
