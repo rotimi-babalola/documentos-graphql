@@ -8,7 +8,7 @@
     "start:dev": "nodemon server.js",
     "seed": "sequelize db:seed:all",
     "migrate": "sequelize db:migrate",
-    "start": "npm run migrate && npm run seed && nodemon server.js"
+    "start": "npm run migrate && npm run seed && node server.js"
   },
   "husky": {
     "hooks": {
