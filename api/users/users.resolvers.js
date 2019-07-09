@@ -116,6 +116,20 @@ const login = async (root, args, { models }) => {
   };
 };
 
+// gets the documents belonging to a user
+const documents = combineResolvers(
+  isAuthenticated,
+  async (user, args, { models }) => {
+    try {
+      return await models.documents.findAll({
+        where: { userId: user.id },
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+);
+
 module.exports = {
   Query: {
     getUser,
@@ -126,5 +140,8 @@ module.exports = {
     login,
     updateUser,
     deleteUser,
+  },
+  User: {
+    documents,
   },
 };

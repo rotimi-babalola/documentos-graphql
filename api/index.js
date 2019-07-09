@@ -1,11 +1,21 @@
 const merge = require('lodash/merge');
 const jwt = require('jsonwebtoken');
+const depthLimit = require('graphql-depth-limit');
 
 const models = require('../models');
 const users = require('../api/users');
 const documents = require('../api/documents');
 
 require('dotenv').config();
+
+const MAX_QUERY_DEPTH = 4;
+
+const DepthLimitRule = depthLimit(
+  MAX_QUERY_DEPTH,
+  { ignore: ['whatever', 'trusted'] },
+  // eslint-disable-next-line no-console
+  depths => console.log(depths),
+);
 
 module.exports = {
   typeDefs: [users.typeDefs, documents.typeDefs].join(' '),
@@ -21,4 +31,5 @@ module.exports = {
       },
     };
   },
+  validationRules: [DepthLimitRule],
 };

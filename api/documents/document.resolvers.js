@@ -142,6 +142,19 @@ const deleteDocument = combineResolvers(
   },
 );
 
+const owner = combineResolvers(
+  isAuthenticated,
+  async (document, args, { models }) => {
+    try {
+      return await models.users.findOne({
+        where: { id: document.userId },
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+);
+
 module.exports = {
   Query: {
     getDocuments,
@@ -152,5 +165,8 @@ module.exports = {
     updateDocument,
     transferDocument,
     deleteDocument,
+  },
+  Document: {
+    owner,
   },
 };
