@@ -32,7 +32,6 @@ module.exports = {
         },
       };
     } catch (error) {
-      console.log(error, '>>>');
       return {
         models: { users: models.Users, documents: models.Documents },
       };
