@@ -21,15 +21,22 @@ module.exports = {
   typeDefs: [users.typeDefs, documents.typeDefs].join(' '),
   resolvers: merge({}, users.resolvers, documents.resolvers),
   context: async ({ req }) => {
-    const token = req.headers.authorization || '';
-    const { userId, role } = jwt.verify(token, process.env.JWT_SECRET);
-    return {
-      models: { users: models.Users, documents: models.Documents },
-      user: {
-        id: userId,
-        role,
-      },
-    };
+    try {
+      const token = req.headers.authorization || '';
+      const { userId, role } = jwt.verify(token, process.env.JWT_SECRET);
+      return {
+        models: { users: models.Users, documents: models.Documents },
+        user: {
+          id: userId,
+          role,
+        },
+      };
+    } catch (error) {
+      console.log(error, '>>>');
+      return {
+        models: { users: models.Users, documents: models.Documents },
+      };
+    }
   },
   validationRules: [DepthLimitRule],
 };
