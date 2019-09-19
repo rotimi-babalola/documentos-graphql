@@ -57,7 +57,7 @@
     "lodash": "^4.17.15",
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^5.9.4",
+    "sequelize": "^5.19.0",
     "sequelize-cli": "^5.5.0"
   }
 }
